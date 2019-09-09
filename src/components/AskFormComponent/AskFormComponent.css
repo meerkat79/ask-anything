@@ -1,0 +1,8 @@
+.ask-form .MuiFormControl-root {
+    display: flex;
+}
+
+.ask-form {
+    border: 1px solid gray;
+    border-radius: 3px;
+}
