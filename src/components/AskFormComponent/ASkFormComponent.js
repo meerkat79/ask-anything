@@ -35,6 +35,8 @@ export default class AskForm extends React.Component {
         }
     }
 
+    // ToDO: revisit these handler and see if I can reduce this to a single handler function and keep my code more DRY
+
     handleNameChange = (ev)=> {
         ev.preventDefault();
         let nameInfo = {...this.state.form};
