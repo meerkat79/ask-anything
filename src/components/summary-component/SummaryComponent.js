@@ -1,12 +1,12 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
+import { connect } from 'react-redux';
 
 import './SummaryComponent.css';
 
-export default class Summary extends React.Component {
+class Summary extends React.Component {
 
   render() {
-
     let nodata = '';
     let listData = this.props.data.map((item, i)=>{
       return <li key={i}>
@@ -33,3 +33,9 @@ export default class Summary extends React.Component {
   }
 
 }
+
+const mapStateToProps = (state) => {
+  return {data: state.forms};
+}
+
+export default connect(mapStateToProps)(Summary);

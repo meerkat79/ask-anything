@@ -3,16 +3,14 @@ import Summary from '../summary-component/SummaryComponent';
 import Grid from '@material-ui/core/Grid';
 import './DashBoardComponent.css';
 import Ask from '../AskComponent/AskComponent';
-import AskForm from '../AskFormComponent/ASkFormComponent';
+import AskForm from '../AskFormComponent/AskFormComponent';
 
 export default class DashBoard extends React.Component {
-
     constructor(props) {
         super(props)
 
         this.state = {
-            displayForm: false,
-            forms: []
+            displayForm: false
         }
     }
 
@@ -20,31 +18,23 @@ export default class DashBoard extends React.Component {
         this.setState({displayForm: val});
     }
 
-    formsData = (val) => {
-        this.setState({forms: this.state.forms.concat(val)});
-    }
-
     render() {
-
-        console.log('top level state is: ', this.state);
-
         let askForm;
 
         if (this.state.displayForm) {
-            askForm = <AskForm onShowForm={this.showForm} formsData={this.formsData}></AskForm>;
+            askForm = <AskForm onShowForm={this.showForm}></AskForm>;
         }
 
         return (
             <div className="dashboard">
                 <Grid container spacing={3}>
                     <Grid item xs={10}>
-                        <Summary data={this.state.forms}></Summary>
+                        <Summary></Summary>
                         <Ask onShowForm={this.showForm}></Ask>
-                        {askForm}
+                            {askForm}
                     </Grid>
                 </Grid>
             </div>
         )
     }
-
 }

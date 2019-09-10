@@ -2,10 +2,12 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
+import { submitForm } from '../../actions';
 
 import './AskFormComponent.css';
 
-const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+const validEmailRegex = RegExp(/^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+.)+[^<>()[\].,;:\s@"]{2,})$/i);
 const validateForm = (errors) => {
     let valid = true;
     Object.values(errors).forEach(
@@ -13,9 +15,9 @@ const validateForm = (errors) => {
       (val) => val.length > 0 && (valid = false)
     );
     return valid;
-  }
+  };
 
-export default class AskForm extends React.Component {
+class AskForm extends React.Component {
 
     constructor(props) {
         super(props)
@@ -33,7 +35,7 @@ export default class AskForm extends React.Component {
                 email: ''
               }
         }
-    }
+    }    
 
     // ToDO: revisit these handler and see if I can reduce this to a single handler function and keep my code more DRY
 
@@ -100,17 +102,17 @@ export default class AskForm extends React.Component {
         ev.preventDefault();
 
         if(validateForm(this.state.errors)) {
-            console.info('Valid Form')
-            this.props.formsData(this.state.form)
+            //we can trigger a UI message regarding form here for now in console
+            console.info('Valid Form');
             this.props.onShowForm(false);
+            this.props.submitForm(this.state.form);
           }else{
+            //we can trigger a UI message regarding form here for now in console
             console.error('Invalid Form')
           }
     }
 
-
     render() {
-        console.log('new state', this.state);
         return (
             <div className="ask-form" style={{marginTop: '1rem'}}>
                 <Grid item xs={12} md={6} lg={3}>
@@ -164,3 +166,9 @@ export default class AskForm extends React.Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {state};
+  }
+
+export default connect(mapStateToProps, { submitForm })(AskForm);
