@@ -5,6 +5,16 @@ import Button from '@material-ui/core/Button';
 
 import './AskFormComponent.css';
 
+const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+const validateForm = (errors) => {
+    let valid = true;
+    Object.values(errors).forEach(
+      // if we have an error string set valid to false
+      (val) => val.length > 0 && (valid = false)
+    );
+    return valid;
+  }
+
 export default class AskForm extends React.Component {
 
     constructor(props) {
@@ -16,44 +26,92 @@ export default class AskForm extends React.Component {
                 surname: '',
                 email: '',
                 question: ''
-            }
+            },
+            errors: {
+                name: '',
+                surname: '',
+                email: ''
+              }
         }
     }
 
     handleNameChange = (ev)=> {
+        ev.preventDefault();
         let nameInfo = {...this.state.form};
         nameInfo.name = ev.target.value;
         this.setState({form: nameInfo});
+        let errorInfo = {...this.state.errors};
+
+        if(nameInfo.name.length < 2) {
+            errorInfo.name = 'Please enter a name with at least 2 characters';
+            this.setState({errors: errorInfo});
+        }
+        else {
+            errorInfo.name = '';
+            this.setState({errors: errorInfo});
+        }
     }
 
     handleSurnameChange = (ev)=> {
+        ev.preventDefault();
         let surnameInfo = {...this.state.form};
         surnameInfo.surname = ev.target.value;
         this.setState({form: surnameInfo});
+        let errorInfo = {...this.state.errors};
+
+        if(surnameInfo.surname.length < 3) {
+            errorInfo.surname = 'Please enter a name with at least 2 characters';
+            this.setState({errors: errorInfo});
+        }
+        else {
+            errorInfo.surname = '';
+            this.setState({errors: errorInfo});
+        }        
     }
 
     handleEmailChange = (ev)=> {
+        ev.preventDefault();
         let emailInfo = {...this.state.form};
         emailInfo.email = ev.target.value;
         this.setState({form: emailInfo});
+        let errorInfo = {...this.state.errors};
+
+        if(!validEmailRegex.test(emailInfo.email)) {
+            errorInfo.email = 'Please enter a valid email address';
+            this.setState({errors: errorInfo});
+        }
+        else {
+            errorInfo.email = '';
+            this.setState({errors: errorInfo});
+        } 
+
     }
 
     handleQuestionChange = (ev)=> {
+        ev.preventDefault();
         let questionInfo = {...this.state.form};
         questionInfo.question = ev.target.value;
         this.setState({form: questionInfo});
     }    
 
-    handleSubmit = () => {
-        this.props.formsData(this.state.form)
-        this.props.onShowForm(false);
+    handleSubmit = (ev) => {
+        ev.preventDefault();
+
+        if(validateForm(this.state.errors)) {
+            console.info('Valid Form')
+            this.props.formsData(this.state.form)
+            this.props.onShowForm(false);
+          }else{
+            console.error('Invalid Form')
+          }
     }
 
 
     render() {
+        console.log('new state', this.state);
         return (
             <div className="ask-form" style={{marginTop: '1rem'}}>
-                <Grid item xs={5}>
+                <Grid item xs={12} md={6} lg={3}>
                 <form style={{padding: '1rem'}}>
                     <TextField
                         id="name"
@@ -62,6 +120,7 @@ export default class AskForm extends React.Component {
                         placeholder="Name"
                         onChange={this.handleNameChange}
                         margin="normal"
+                        error={this.state.errors.name !== '' ? true: false}
                         required
                     />
                     <TextField
@@ -71,15 +130,18 @@ export default class AskForm extends React.Component {
                         placeholder="Surname"
                         onChange={this.handleSurnameChange}
                         margin="normal"
+                        error={this.state.errors.surname !== '' ? true: false}
                         required
                     /> 
                     <TextField
                         id="email"
                         label="Email"
+                        type="email"
                         className={'ask-form_name'}
                         placeholder="Email"
                         onChange={this.handleEmailChange}
                         margin="normal"
+                        error={this.state.errors.email !== '' ? true: false}
                         required
                     />
                     <TextField
@@ -91,7 +153,7 @@ export default class AskForm extends React.Component {
                         onChange={this.handleQuestionChange}
                         margin="normal"
                     />                    
-                    <Button variant="contained" color="primary" onClick={this.handleSubmit}>
+                    <Button variant="contained" color="primary" onClick={this.handleSubmit} disabled={this.state.form.email === ''}>
                         Submit
                     </Button>                                                                       
                 </form>
